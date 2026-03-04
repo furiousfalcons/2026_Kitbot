@@ -26,6 +26,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.Kinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -58,7 +59,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   private Pose2d m_pose;
   private final EncoderConfig encoderConfig = new EncoderConfig();
   private SparkMaxConfig allConfigs = new SparkMaxConfig();
-  private final RobotConfig config;
+  private RobotConfig config;
   SparkMaxConfig motorConfig;
 
 
@@ -127,7 +128,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
       // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
-    RobotConfig config;
+
     try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
@@ -135,7 +136,24 @@ public class CANDriveSubsystem extends SubsystemBase {
       e.printStackTrace();
     }
 
-    // Configure AutoBuilder last
+
+
+    /* 
+    m_PoseEstimator = new DifferentialDrivePoseEstimator(
+      m_Kinematics, 
+      new Rotation2d(m_gyro.getAngle()), 
+      Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
+      Units.inchesToMeters(m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION),
+      new Pose2d(),
+      VecBuilder.fill(0.05,0.05,Units.degreesToRadians(5)),
+      VecBuilder.fill(0.5,0.5,Units.degreesToRadians(30)));
+      m_PoseEstimator.update(      new Rotation2d(m_gyro.getAngle()), 
+        m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION, 
+        m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION);
+     */
+
+
+         // Configure AutoBuilder last
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -156,22 +174,8 @@ public class CANDriveSubsystem extends SubsystemBase {
             },
             this // Reference to this subsystem to set requirements
     );
-
-
-    /* 
-    m_PoseEstimator = new DifferentialDrivePoseEstimator(
-      m_Kinematics, 
-      new Rotation2d(m_gyro.getAngle()), 
-      Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
-      Units.inchesToMeters(m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION),
-      new Pose2d(),
-      VecBuilder.fill(0.05,0.05,Units.degreesToRadians(5)),
-      VecBuilder.fill(0.5,0.5,Units.degreesToRadians(30)));
-      m_PoseEstimator.update(      new Rotation2d(m_gyro.getAngle()), 
-        m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION, 
-        m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION);
-     */
   }
+
 
 
   @Override
@@ -202,8 +206,17 @@ public class CANDriveSubsystem extends SubsystemBase {
     m_pose = newPose;
   }
 
-public ChassisSpeeds getRobotRelativeSpeeds() {
-    return m_Kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(),m_rightEncoder.getVelocity()));
-  }
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+      return m_Kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(),m_rightEncoder.getVelocity()));
+    }
 
+
+  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    driveArcade(targetSpeeds.vxMetersPerSecond, targetSpeeds.omegaRadiansPerSecond * 0.02 + m_pose.getRotation().getRadians());
+
+
+  }
+  
 }
+
