@@ -25,6 +25,8 @@ public final class Constants {
     // Current limit for drivetrain motors. 60A is a reasonable maximum to reduce
     // likelihood of tripping breakers or damaging CIM motors
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 60;
+    public static final double WHEEL_DIAMETER = 6.0;
+    public static final double GEAR_REDUCTION = 10.0;
   }
 
   public static final class FuelConstants {
@@ -57,5 +59,13 @@ public final class Constants {
     // help avoid turning too fast and beign difficult to control
     public static final double DRIVE_SCALING = .7;
     public static final double ROTATION_SCALING = .8;
+  }
+
+  public static final class VisionConstants {
+    public static final String USB_CAMERA1_NAME = "photonvision";
+    public static final String USB_CAMERA2_NAME = "Back camera";
+    public static final double CAMERA_HEIGHT_METERS = 1.0;
+    public static final double TARGET_HEIGHT_METERS = 1.0;
+    public static final double CAMERA_PITCH_RADIANS = 0;
   }
 }
