@@ -33,6 +33,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -61,9 +62,10 @@ public class CANDriveSubsystem extends SubsystemBase {
   private SparkMaxConfig allConfigs = new SparkMaxConfig();
   private RobotConfig config;
   SparkMaxConfig motorConfig;
+  VisionSubsystem visionSubsystem = new VisionSubsystem();
 
 
-  //private final DifferentialDrivePoseEstimator m_PoseEstimator;
+  private final DifferentialDrivePoseEstimator m_PoseEstimator;
 
 
 
@@ -138,8 +140,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
 
 
-    /* 
-    m_PoseEstimator = new DifferentialDrivePoseEstimator(
+      m_PoseEstimator = new DifferentialDrivePoseEstimator(
       m_Kinematics, 
       new Rotation2d(m_gyro.getAngle()), 
       Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
@@ -148,9 +149,8 @@ public class CANDriveSubsystem extends SubsystemBase {
       VecBuilder.fill(0.05,0.05,Units.degreesToRadians(5)),
       VecBuilder.fill(0.5,0.5,Units.degreesToRadians(30)));
       m_PoseEstimator.update(      new Rotation2d(m_gyro.getAngle()), 
-        m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION, 
-        m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION);
-     */
+      m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION, 
+      m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION);
 
 
          // Configure AutoBuilder last
@@ -183,6 +183,8 @@ public class CANDriveSubsystem extends SubsystemBase {
     m_pose = m_odometry.update(new Rotation2d(m_gyro.getAngle()),
       Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
       Units.inchesToMeters(m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION));
+      m_PoseEstimator.addVisionMeasurement(visionSubsystem.getVisionMeasurement().getFirst().toPose2d(), 
+          visionSubsystem.getVisionMeasurement().getSecond().doubleValue());
   }
 
   public void driveArcade(double xSpeed, double zRotation) {
@@ -214,9 +216,8 @@ public class CANDriveSubsystem extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     driveArcade(targetSpeeds.vxMetersPerSecond, targetSpeeds.omegaRadiansPerSecond * 0.02 + m_pose.getRotation().getRadians());
-
-
   }
   
-}
+  
+  }
 

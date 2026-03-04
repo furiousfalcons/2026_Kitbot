@@ -14,10 +14,12 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -37,6 +39,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     //PhotonCamera camera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME);
     PhotonPipelineResult result = frontCamera.getLatestResult();
+     Optional<EstimatedRobotPose>visionEst;
 
 
     @Override
@@ -44,7 +47,7 @@ public class VisionSubsystem extends SubsystemBase {
             System.out.println(kTagLayout);
             System.out.println(AprilTagFields.kDefaultField);
             PhotonPipelineResult result = frontCamera.getLatestResult();
-            Optional<EstimatedRobotPose>visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
+            visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
             if (visionEst.isEmpty() || true) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
@@ -54,5 +57,13 @@ public class VisionSubsystem extends SubsystemBase {
             
         }
     }
+
+    public Pair<Pose3d, Double> getVisionMeasurement(){
+
+    Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose, visionEst.get().timestampSeconds);
+    return result;
+    }
+
+    
 
 }
