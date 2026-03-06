@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -63,6 +64,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   private RobotConfig config;
   SparkMaxConfig motorConfig;
   VisionSubsystem visionSubsystem = new VisionSubsystem();
+  PIDController angController;
 
 
   private final DifferentialDrivePoseEstimator m_PoseEstimator;
@@ -216,6 +218,14 @@ public class CANDriveSubsystem extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     driveArcade(targetSpeeds.vxMetersPerSecond, targetSpeeds.omegaRadiansPerSecond * 0.02 + m_pose.getRotation().getRadians());
+  }
+
+  public DifferentialDrive getDrive(){
+    return drive;
+  }
+
+  public ADIS16470_IMU getGyro(){
+    return m_gyro;
   }
   
   

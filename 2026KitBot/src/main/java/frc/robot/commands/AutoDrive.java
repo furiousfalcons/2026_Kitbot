@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANDriveSubsystem;
 
@@ -12,13 +15,22 @@ public class AutoDrive extends Command {
   /** Creates a new Drive. */
   CANDriveSubsystem driveSubsystem;
   double xSpeed, zRotation;
+  ADIS16470_IMU gyro;
+  PIDController angController;
+  DifferentialDrive drive;
+  double angle;
 
-  public AutoDrive(CANDriveSubsystem driveSystem, double xSpeed, double zRotation) {
+
+
+  public AutoDrive(CANDriveSubsystem driveSystem, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;
-    this.xSpeed = xSpeed;
-    this.zRotation = zRotation;
+    gyro = driveSystem.getGyro();
+    drive = driveSubsystem.getDrive();
+    this.angle = angle;
+    
+
   }
 
   // Called when the command is initially scheduled.
@@ -31,13 +43,14 @@ public class AutoDrive extends Command {
   // arcade drive object
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(xSpeed, zRotation);
-  }
+      double output = angController.calculate(gyro.getAngle(), angle);
+     double speed = 4*output;
+     drive.tankDrive(speed, -speed);  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.driveArcade(0, 0);
+    
   }
 
   // Returns true when the command should end.
@@ -45,4 +58,6 @@ public class AutoDrive extends Command {
   public boolean isFinished() {
     return false;
   }
+
+  
 }

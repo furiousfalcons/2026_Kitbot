@@ -21,6 +21,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -62,6 +64,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose, visionEst.get().timestampSeconds);
     return result;
+    }
+
+    public Pose2d getAutoPose(){
+        return visionEst.get().estimatedPose.toPose2d();
+
     }
 
     

@@ -5,10 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.*;
+
+import frc.robot.commands.AutoDrive;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
@@ -17,6 +20,7 @@ import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
 
 
 /**
@@ -30,8 +34,9 @@ public class RobotContainer {
   // The robot's subsystems
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
-  //private final VisionSubsystem visionSubsystem = new VisionSubsystem();
-
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  double Ey = 10;
+  double Ex = 10;
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
@@ -94,6 +99,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+    double currX = visionSubsystem.getAutoPose().getX();
+    double currY = visionSubsystem.getAutoPose().getY();
+    double angle = Math.atan((currY - Ey)/(currX-Ex))*180/Math.PI;
+    SmartDashboard.putNumber("angle", angle);
+    return new AutoDrive(driveSubsystem, angle);
   }
 }
