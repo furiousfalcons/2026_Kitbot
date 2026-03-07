@@ -32,7 +32,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.ADIS16448_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -53,7 +53,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
   private final DifferentialDrive drive;
   private final DifferentialDriveKinematics m_Kinematics;
-  private final ADIS16470_IMU m_gyro;
+  private final ADIS16448_IMU m_gyro;
   private final RelativeEncoder m_leftEncoder;
   private final RelativeEncoder m_rightEncoder;
   private final double positionConversionFactor;
@@ -118,7 +118,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     ////////////////////////////////////////////////////////////////////////////////////////////
     
     m_Kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
-    m_gyro = new ADIS16470_IMU();
+    m_gyro = new ADIS16448_IMU();
     m_leftEncoder = leftLeader.getEncoder();
     m_rightEncoder = rightLeader.getEncoder();
     positionConversionFactor = (Math.PI * WHEEL_DIAMETER)/GEAR_REDUCTION;
@@ -185,8 +185,8 @@ public class CANDriveSubsystem extends SubsystemBase {
     m_pose = m_odometry.update(new Rotation2d(m_gyro.getAngle()),
       Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
       Units.inchesToMeters(m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION));
-      m_PoseEstimator.addVisionMeasurement(visionSubsystem.getVisionMeasurement().getFirst().toPose2d(), 
-          visionSubsystem.getVisionMeasurement().getSecond().doubleValue());
+      //m_PoseEstimator.addVisionMeasurement(visionSubsystem.getVisionMeasurement().getFirst().toPose2d(), 
+          //visionSubsystem.getVisionMeasurement().getSecond().doubleValue());
   }
 
   public void driveArcade(double xSpeed, double zRotation) {
@@ -224,7 +224,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     return drive;
   }
 
-  public ADIS16470_IMU getGyro(){
+  public ADIS16448_IMU getGyro(){
     return m_gyro;
   }
   

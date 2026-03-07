@@ -46,25 +46,26 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-            System.out.println(kTagLayout);
-            System.out.println(AprilTagFields.kDefaultField);
+            //System.out.println(kTagLayout);
+            //System.out.println(AprilTagFields.kDefaultField);
             PhotonPipelineResult result = frontCamera.getLatestResult();
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
             if (visionEst.isEmpty() || true) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
 
-                System.out.println(visionEst.get().estimatedPose);
+                //System.out.println(visionEst.get().estimatedPose);
                 
             
         }
     }
 
-    public Pair<Pose3d, Double> getVisionMeasurement(){
+    /*public Pair<Pose3d, Double> getVisionMeasurement(){
 
     Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose, visionEst.get().timestampSeconds);
     return result;
     }
+    */
 
     public Pose2d getAutoPose(){
         return visionEst.get().estimatedPose.toPose2d();

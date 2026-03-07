@@ -100,9 +100,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return autoChooser.getSelected();
-    double currX = visionSubsystem.getAutoPose().getX();
-    double currY = visionSubsystem.getAutoPose().getY();
-    double angle = Math.atan((currY - Ey)/(currX-Ex))*180/Math.PI;
+    //double currX = visionSubsystem.getAutoPose().getX();
+    //double currY = visionSubsystem.getAutoPose().getY();
+    //double angle = Math.atan((currY - Ey)/(currX-Ex))*180/Math.PI;
+    double angle = 90;
     SmartDashboard.putNumber("angle", angle);
     return new AutoDrive(driveSubsystem, angle);
   }

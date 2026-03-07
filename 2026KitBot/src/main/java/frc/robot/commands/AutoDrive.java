@@ -5,8 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.ADIS16448_IMU;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANDriveSubsystem;
 
@@ -15,7 +16,7 @@ public class AutoDrive extends Command {
   /** Creates a new Drive. */
   CANDriveSubsystem driveSubsystem;
   double xSpeed, zRotation;
-  ADIS16470_IMU gyro;
+  ADIS16448_IMU gyro;
   PIDController angController;
   DifferentialDrive drive;
   double angle;
@@ -29,6 +30,7 @@ public class AutoDrive extends Command {
     gyro = driveSystem.getGyro();
     drive = driveSubsystem.getDrive();
     this.angle = angle;
+    angController = new PIDController(0.01, 0.0, 0.0);
     
 
   }
@@ -44,7 +46,8 @@ public class AutoDrive extends Command {
   @Override
   public void execute() {
       double output = angController.calculate(gyro.getAngle(), angle);
-     double speed = 4*output;
+     double speed = output;
+      SmartDashboard.putNumber("Speed", speed);
      drive.tankDrive(speed, -speed);  }
 
   // Called once the command ends or is interrupted.
