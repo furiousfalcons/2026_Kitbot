@@ -13,6 +13,8 @@ import static frc.robot.Constants.OperatorConstants.*;
 
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.Drive;
+import frc.robot.commands.Auto1;
+
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
 import frc.robot.commands.Intake;
@@ -100,11 +102,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return autoChooser.getSelected();
+
     //double currX = visionSubsystem.getAutoPose().getX();
     //double currY = visionSubsystem.getAutoPose().getY();
     //double angle = Math.atan((currY - Ey)/(currX-Ex))*180/Math.PI;
-    double angle = 90;
-    SmartDashboard.putNumber("angle", angle);
-    return new AutoDrive(driveSubsystem, angle);
+    double angle1 = 45;
+    double angle2 = -45;
+    SmartDashboard.putNumber("angle", angle1);
+    return new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, 0.5);
   }
 }

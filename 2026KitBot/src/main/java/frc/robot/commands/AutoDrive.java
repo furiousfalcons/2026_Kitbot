@@ -38,6 +38,7 @@ public class AutoDrive extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    gyro.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -45,10 +46,12 @@ public class AutoDrive extends Command {
   // arcade drive object
   @Override
   public void execute() {
-      double output = angController.calculate(gyro.getAngle(), angle);
-     double speed = output;
-      SmartDashboard.putNumber("Speed", speed);
-     drive.tankDrive(speed, -speed);  }
+    double output = angController.calculate(gyro.getAngle(), angle);
+    double speed = output;
+    SmartDashboard.putNumber("Speed", speed);
+    SmartDashboard.putNumber("Angle", gyro.getAngle());
+    drive.tankDrive(speed, -speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

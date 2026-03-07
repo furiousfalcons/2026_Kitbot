@@ -1,29 +1,19 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
-import static frc.robot.Constants.OperatorConstants.*;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CANDriveSubsystem;
-import edu.wpi.first.wpilibj.ADIS16448_IMU;
+import edu.wpi.first.wpilibj2.command.Command;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Drive extends Command {
-  /** Creates a new Drive. */
-  CANDriveSubsystem driveSubsystem;
-  CommandXboxController controller;
-  ADIS16448_IMU gyro;
 
-  public Drive(CANDriveSubsystem driveSystem, CommandXboxController driverController) {
+public class DriveDistance extends Command{
+    CANDriveSubsystem driveSubsystem;
+    boolean forward;
+    public DriveDistance(CANDriveSubsystem driveSystem, boolean forward) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;
-    controller = driverController;
+    this.forward = forward;
+    //controller = driverController;
   }
 
   // Called when the command is initially scheduled.
@@ -38,7 +28,14 @@ public class Drive extends Command {
   // controllable.
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(-controller.getLeftY() * DRIVE_SCALING, -controller.getRightX() * ROTATION_SCALING);
+    double speed;
+    if (forward){
+            speed = 0.5;
+    }
+    else{
+        speed = -0.5;
+    }
+    driveSubsystem.driveArcade(speed, 0);
     //SmartDashboard.putNumber("Angle", gyro.getAngle());
   }
 
@@ -58,3 +55,4 @@ public class Drive extends Command {
     return false;
   }
 }
+
