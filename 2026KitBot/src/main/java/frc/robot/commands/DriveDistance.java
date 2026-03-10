@@ -7,12 +7,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriveDistance extends Command{
     CANDriveSubsystem driveSubsystem;
-    boolean forward;
-    public DriveDistance(CANDriveSubsystem driveSystem, boolean forward) {
+    double speed;
+    public DriveDistance(CANDriveSubsystem driveSystem, boolean forward, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;
-    this.forward = forward;
+    if (forward){
+      this.speed = speed;
+    }
+    else{
+      this.speed = speed*(-1);
+    }
     //controller = driverController;
   }
 
@@ -28,16 +33,9 @@ public class DriveDistance extends Command{
   // controllable.
   @Override
   public void execute() {
-    double speed;
-    if (forward){
-            speed = 0.5;
-    }
-    else{
-        speed = -0.5;
-    }
     driveSubsystem.driveArcade(speed, 0);
-    //SmartDashboard.putNumber("Angle", gyro.getAngle());
-  }
+    }
+
 
   public void periodic(){
     //SmartDashboard.putNumber("Angle", gyro.getAngle());

@@ -33,7 +33,7 @@ public class VisionSubsystem extends SubsystemBase {
     PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera used in the pipeline
     //PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
 
-    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));   // Set position of camera relative to robot, meters and radians
+    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.3175, 0.0, 0.0), new Rotation3d(0, 0, 0));   // Set position of camera relative to robot, meters and radians
 
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
@@ -51,7 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
             PhotonPipelineResult result = frontCamera.getLatestResult();
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
-            if (visionEst.isEmpty() || true) {
+            if (visionEst.isEmpty()) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
 
                 //System.out.println(visionEst.get().estimatedPose);
@@ -68,7 +68,10 @@ public class VisionSubsystem extends SubsystemBase {
     */
 
     public Pose2d getAutoPose(){
-        return visionEst.get().estimatedPose.toPose2d();
+        if (visionEst != null){
+            return visionEst.get().estimatedPose.toPose2d();
+        }
+        return null;
 
     }
 

@@ -62,7 +62,7 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String USB_CAMERA1_NAME = "TurretCamera";
+    public static final String USB_CAMERA1_NAME = "Front Camera";
     public static final String USB_CAMERA2_NAME = "Back camera";
     public static final double CAMERA_HEIGHT_METERS = 1.0;
     public static final double TARGET_HEIGHT_METERS = 1.0;

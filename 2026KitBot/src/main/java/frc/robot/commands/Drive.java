@@ -17,7 +17,6 @@ public class Drive extends Command {
   /** Creates a new Drive. */
   CANDriveSubsystem driveSubsystem;
   CommandXboxController controller;
-  ADIS16448_IMU gyro;
 
   public Drive(CANDriveSubsystem driveSystem, CommandXboxController driverController) {
     // Use addRequirements() here to declare subsystem dependencies.

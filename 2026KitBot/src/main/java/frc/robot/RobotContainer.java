@@ -4,17 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.OperatorConstants.*;
-
-import frc.robot.commands.AutoDrive;
-import frc.robot.commands.Drive;
+import static frc.robot.Constants.OperatorConstants.DRIVER_CONTROLLER_PORT;
+import static frc.robot.Constants.OperatorConstants.OPERATOR_CONTROLLER_PORT;
 import frc.robot.commands.Auto1;
-
+import frc.robot.commands.Auto2;
+import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
 import frc.robot.commands.Intake;
@@ -37,8 +36,10 @@ public class RobotContainer {
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
-  double Ey = 10;
-  double Ex = 10;
+  double DepotY;
+  double DepotX;
+  double theta;
+  double robotHeading;
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
@@ -101,14 +102,40 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    //return autoChooser.getSelected();
 
-    //double currX = visionSubsystem.getAutoPose().getX();
-    //double currY = visionSubsystem.getAutoPose().getY();
-    //double angle = Math.atan((currY - Ey)/(currX-Ex))*180/Math.PI;
-    double angle1 = 45;
-    double angle2 = -45;
-    SmartDashboard.putNumber("angle", angle1);
-    return new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, 0.5);
+    double currX = visionSubsystem.getAutoPose().getX();
+    double currY = visionSubsystem.getAutoPose().getY();
+    robotHeading = driveSubsystem.getGyro().getAngle();
+
+    
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+        DepotX = 15.513272;
+        DepotY = 6.0539155;
+    }
+
+    else{
+      DepotX = 1.01600;
+      DepotY = 2.116931;
+    }
+    
+    theta = Math.abs(Math.atan((currY - DepotY)/(currX-DepotX))*180/Math.PI);
+    double distance = Math.pow(Math.pow((currY - DepotY), 2) + Math.pow((currX - DepotX), 2), 0.5);
+
+    double angle1 = -1*theta - robotHeading;
+    double angle2 = theta;
+
+    double angle3 = theta - robotHeading;
+    double angle4 = 180 - theta;
+
+    Command depotCommand = new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, distance, 0.5);
+    Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, distance, 0.5);
+    //double angle1 = 45;
+    //double angle2 = -45;
+    //SmartDashboard.putNumber("angle", angle1);
+    autoChooser.addOption("Depot", depotCommand);
+    autoChooser.addOption("Outpost", outpostCommand);
+    
+    return autoChooser.getSelected();
+
   }
 }
