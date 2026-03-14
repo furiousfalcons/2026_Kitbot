@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,8 +24,6 @@ import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -38,6 +38,8 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   double DepotY;
   double DepotX;
+  double OutpostX;
+  double OutpostY;
   double theta;
   double robotHeading;
   // The driver's controller
@@ -102,40 +104,59 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+    Pose2d currPose = visionSubsystem.getAutoPose();
+    double currX = currPose.getX();
+    double currY = currPose.getY();
+    robotHeading = currPose.getRotation().getDegrees();
 
-    double currX = visionSubsystem.getAutoPose().getX();
-    double currY = visionSubsystem.getAutoPose().getY();
-    robotHeading = driveSubsystem.getGyro().getAngle();
-
-    
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-        DepotX = 15.513272;
-        DepotY = 6.0539155;
-    }
-
-    else{
-      DepotX = 1.01600;
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      DepotX = 15.513272;
       DepotY = 2.116931;
+      OutpostX = 15.780766;
+      OutpostY = 7.40965675;
+      if (robotHeading < 0) {
+        robotHeading = -1 * (180 - robotHeading);
+      } else {
+        robotHeading = 180 - robotHeading;
+      }
     }
-    
-    theta = Math.abs(Math.atan((currY - DepotY)/(currX-DepotX))*180/Math.PI);
-    double distance = Math.pow(Math.pow((currY - DepotY), 2) + Math.pow((currX - DepotX), 2), 0.5);
 
-    double angle1 = -1*theta - robotHeading;
-    double angle2 = theta;
+    else {
+      DepotX = 1.01600;
+      DepotY = 6.0539155;
+      OutpostX = 0.7366;
+      OutpostY = 0.67230625;
+      robotHeading = currPose.getRotation().getDegrees();
+    }
 
-    double angle3 = theta - robotHeading;
-    double angle4 = 180 - theta;
+    double depotTheta = Math.abs(Math.atan((currY - DepotY) / (currX - DepotX)) * 180 / Math.PI);
+    double depotDistance = Math.pow(Math.pow((currY - DepotY), 2) + Math.pow((currX - DepotX), 2), 0.5);
 
-    Command depotCommand = new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, distance, 0.5);
-    Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, distance, 0.5);
-    //double angle1 = 45;
-    //double angle2 = -45;
-    //SmartDashboard.putNumber("angle", angle1);
-    autoChooser.addOption("Depot", depotCommand);
-    autoChooser.addOption("Outpost", outpostCommand);
-    
-    return autoChooser.getSelected();
+    double outpostTheta = Math.abs(Math.atan((currY - OutpostY) / (currX - OutpostX)) * 180 / Math.PI);
+    double outpostDistance = Math.pow(Math.pow((currY - OutpostY), 2) + Math.pow((currX - OutpostX), 2), 0.5);
+
+    double angle1 = -1 * depotTheta - robotHeading;
+    double angle2 = depotTheta;
+
+    double angle3 = outpostTheta - robotHeading;
+    double angle4 = 180 - outpostTheta;
+
+    Command depotCommand = new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, depotDistance, 0.5);
+    SmartDashboard.putNumber("Angle1", angle1);
+    SmartDashboard.putNumber("Angle2", angle2);
+    SmartDashboard.putNumber("Distance", depotDistance);
+
+
+    Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, outpostDistance, 0.5);
+    // double angle1 = 45;
+    // double angle2 = -45;
+
+    // SmartDashboard.putNumber("angle", angle1);
+    // autoChooser.addOption("Depot", depotCommand);
+    // autoChooser.addOption("Outpost", outpostCommand);
+
+    // return autoChooser.getSelected();
+    return depotCommand;
 
   }
 }

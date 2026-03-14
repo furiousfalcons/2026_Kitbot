@@ -63,7 +63,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   private SparkMaxConfig allConfigs = new SparkMaxConfig();
   private RobotConfig config;
   SparkMaxConfig motorConfig;
-  VisionSubsystem visionSubsystem = new VisionSubsystem();
+  //VisionSubsystem visionSubsystem = new VisionSubsystem();
   PIDController angController;
 
 
