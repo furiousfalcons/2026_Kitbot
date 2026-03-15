@@ -28,7 +28,7 @@ public class TurnToAngle extends Command {
     driveSubsystem = driveSystem;
     gyro = driveSystem.getGyro();
     drive = driveSubsystem.getDrive();
-    this.angle = angle;
+    this.angle = -1*angle;
     angController = new PIDController(0.01, 0.0, 0.0);
     
 
@@ -49,7 +49,7 @@ public class TurnToAngle extends Command {
     double speed = output;
     SmartDashboard.putNumber("Speed", speed);
     SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
-    drive.tankDrive(-speed, speed);
+    drive.tankDrive(speed, -speed);
   }
 
   // Called once the command ends or is interrupted.

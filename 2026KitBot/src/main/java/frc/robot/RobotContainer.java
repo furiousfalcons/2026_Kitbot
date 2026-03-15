@@ -105,6 +105,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     Pose2d currPose = visionSubsystem.getAutoPose();
+
+    if (currPose.equals(new Pose2d())){ // so it doesn't crash out if it's not looking at an apriltag
+    
+        return null;
+    }
     double currX = currPose.getX();
     double currY = currPose.getY();
     robotHeading = currPose.getRotation().getDegrees();
@@ -115,9 +120,9 @@ public class RobotContainer {
       OutpostX = 15.780766;
       OutpostY = 7.40965675;
       if (robotHeading < 0) {
-        robotHeading = -1 * (180 - robotHeading);
+        robotHeading = (180 + robotHeading);
       } else {
-        robotHeading = 180 - robotHeading;
+        robotHeading = (robotHeading - 180);
       }
     }
 
@@ -145,6 +150,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Angle1", angle1);
     SmartDashboard.putNumber("Angle2", angle2);
     SmartDashboard.putNumber("Distance", depotDistance);
+    driveSubsystem.getGyro().reset();
 
 
     Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, outpostDistance, 0.5);

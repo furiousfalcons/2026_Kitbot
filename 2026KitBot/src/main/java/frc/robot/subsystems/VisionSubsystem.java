@@ -30,51 +30,58 @@ import edu.wpi.first.apriltag.AprilTagFields;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera used in the pipeline
-    //PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
+    PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera
+                                                                                   // used in the pipeline
+    // PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
 
-    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.3175, 0.0, 0.0), new Rotation3d(0, 0, 0));   // Set position of camera relative to robot, meters and radians
+    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.3683, 0.0, 0.5144),
+            new Rotation3d(0, 0, 0)); // Set position of camera relative to robot, meters and radians
 
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
 
-    //PhotonCamera camera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME);
+    // PhotonCamera camera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME);
     PhotonPipelineResult result = frontCamera.getLatestResult();
-     Optional<EstimatedRobotPose>visionEst;
-
+    Optional<EstimatedRobotPose> visionEst;
 
     @Override
     public void periodic() {
-            //System.out.println(kTagLayout);
-            //System.out.println(AprilTagFields.kDefaultField);
+        // System.out.println(kTagLayout);
+        // System.out.println(AprilTagFields.kDefaultField);
+        try {
             PhotonPipelineResult result = frontCamera.getLatestResult();
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
             if (visionEst.isEmpty()) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
 
-                //System.out.println(visionEst.get().estimatedPose);
-                
-            
+                // System.out.println(visionEst.get().estimatedPose);
+
+            }
+
+        }
+
+        catch (Exception E) {
+            System.out.println("no apriltags");
         }
     }
 
-    /*public Pair<Pose3d, Double> getVisionMeasurement(){
+    /*
+     * public Pair<Pose3d, Double> getVisionMeasurement(){
+     * 
+     * Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose,
+     * visionEst.get().timestampSeconds);
+     * return result;
+     * }
+     */
 
-    Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose, visionEst.get().timestampSeconds);
-    return result;
-    }
-    */
-
-    public Pose2d getAutoPose(){
-        if (visionEst != null){
+    public Pose2d getAutoPose() {
+        if (visionEst != null) {
             return visionEst.get().estimatedPose.toPose2d();
         }
         return null;
 
     }
-
-    
 
 }
