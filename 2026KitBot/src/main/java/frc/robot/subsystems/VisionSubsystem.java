@@ -77,10 +77,10 @@ public class VisionSubsystem extends SubsystemBase {
      */
 
     public Pose2d getAutoPose() {
-        if (visionEst != null) {
-            return visionEst.get().estimatedPose.toPose2d();
+        if (visionEst.isEmpty()) {
+            return new Pose2d();
         }
-        return null;
+        return visionEst.get().estimatedPose.toPose2d();
 
     }
 

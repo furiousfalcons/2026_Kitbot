@@ -106,6 +106,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     Pose2d currPose = visionSubsystem.getAutoPose();
 
+
     if (currPose.equals(new Pose2d())){ // so it doesn't crash out if it's not looking at an apriltag
     
         return null;
@@ -146,14 +147,14 @@ public class RobotContainer {
     double angle3 = outpostTheta - robotHeading;
     double angle4 = 180 - outpostTheta;
 
-    Command depotCommand = new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, depotDistance, 0.5);
+    Command depotCommand = new Auto1(driveSubsystem, fuelSubsystem, angle1, angle2, depotDistance, 3);
     SmartDashboard.putNumber("Angle1", angle1);
     SmartDashboard.putNumber("Angle2", angle2);
     SmartDashboard.putNumber("Distance", depotDistance);
     driveSubsystem.getGyro().reset();
 
 
-    Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, outpostDistance, 0.5);
+    Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, outpostDistance, 3);
     // double angle1 = 45;
     // double angle2 = -45;
 
@@ -164,5 +165,9 @@ public class RobotContainer {
     // return autoChooser.getSelected();
     return depotCommand;
 
+  }
+
+  public Command getFirstAuto(){
+    return new ExampleAuto(driveSubsystem, fuelSubsystem);
   }
 }
