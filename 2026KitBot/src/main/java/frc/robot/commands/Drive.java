@@ -37,7 +37,8 @@ public class Drive extends Command {
   // controllable.
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(-controller.getLeftY() * DRIVE_SCALING, -controller.getRightX() * ROTATION_SCALING);
+
+    driveSubsystem.driveArcade(-controller.getLeftY() * DRIVE_SCALING*driveSubsystem.speedMultiplier, -controller.getRightX() * ROTATION_SCALING);
     //SmartDashboard.putNumber("Angle", gyro.getAngle());
   }
 

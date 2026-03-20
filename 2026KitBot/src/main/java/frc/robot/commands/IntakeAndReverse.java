@@ -40,7 +40,7 @@ public class IntakeAndReverse extends Command {
   // Called every time the scheduler runs while the command is scheduled. 
   @Override
   public void execute() {
-        driveSubsystem.driveArcade(-0.10, 0);
+        driveSubsystem.driveArcade(-0.20, 0);
   }
 
   // Called once the command ends or is interrupted. Stop the rollers

@@ -16,14 +16,12 @@ public class Launch extends Command {
   /** Creates a new Intake. */
 
   CANFuelSubsystem fuelSubsystem;
-  CANDriveSubsystem driveSubsystem;
   double startTime;
 
 
-  public Launch(CANFuelSubsystem fuelSystem, CANDriveSubsystem driveSubsystem) {
-    addRequirements(fuelSystem, driveSubsystem);
+  public Launch(CANFuelSubsystem fuelSystem) {
+    addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
-    this.driveSubsystem = driveSubsystem;
   }
 
   // Called when the command is initially scheduled. Set the rollers to the
@@ -42,14 +40,7 @@ public class Launch extends Command {
   // command doesn't require updating any values while running
   @Override
   public void execute() {
-    double currTime = Timer.getFPGATimestamp();
-    if ((currTime - startTime)> 3){
-      driveSubsystem.driveArcade(-0.1, 0);
-    }
-
-    if ((currTime - startTime)> 4 && ((currTime - startTime) < 5)){
-      driveSubsystem.driveArcade(0.1, 0);
-    }
+    
 
 
   }

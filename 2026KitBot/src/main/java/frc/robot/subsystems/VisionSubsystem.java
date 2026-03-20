@@ -33,7 +33,7 @@ public class VisionSubsystem extends SubsystemBase {
     PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera used in the pipeline
     //PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
 
-    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.3175, 0.0, 0.0), new Rotation3d(0, 0, 0));   // Set position of camera relative to robot, meters and radians
+    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));   // Set position of camera relative to robot, meters and radians
 
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
@@ -48,21 +48,15 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
             //System.out.println(kTagLayout);
             //System.out.println(AprilTagFields.kDefaultField);
-            try{
- PhotonPipelineResult result = frontCamera.getLatestResult();
+            PhotonPipelineResult result = frontCamera.getLatestResult();
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
-            if (visionEst.isEmpty()) {
+            if (visionEst.isEmpty() || true) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
-            }
-           
 
                 //System.out.println(visionEst.get().estimatedPose);
                 
             
-        }
-        catch (Exception E){
-            System.out.print("none");
         }
     }
 
@@ -74,12 +68,20 @@ public class VisionSubsystem extends SubsystemBase {
     */
 
     public Pose2d getAutoPose(){
-        if (visionEst != null){
-            return visionEst.get().estimatedPose.toPose2d();
+        if (visionEst.isEmpty()){
+            return new Pose2d();
         }
-        return new Pose2d();
+        return visionEst.get().estimatedPose.toPose2d();
 
     }
+
+    public double getAngleToAlign(){
+        if (result.hasTargets()){
+            return result.getBestTarget().getYaw();
+        }
+        else return 0;
+    }
+
 
     
 

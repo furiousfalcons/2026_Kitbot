@@ -65,6 +65,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   SparkMaxConfig motorConfig;
   //VisionSubsystem visionSubsystem = new VisionSubsystem();
   PIDController angController;
+  public double speedMultiplier;
 
 
   private final DifferentialDrivePoseEstimator m_PoseEstimator;
@@ -72,6 +73,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
 
   public CANDriveSubsystem() {
+    speedMultiplier = 1;
     // create brushed motors for drive
     leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushed);
     leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushed);
