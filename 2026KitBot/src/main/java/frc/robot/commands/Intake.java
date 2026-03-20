@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANFuelSubsystem;
@@ -33,6 +34,8 @@ public class Intake extends Command {
   // command doesn't require updating any values while running
   @Override
   public void execute() {
+    
+
   }
 
   // Called once the command ends or is interrupted. Stop the rollers

@@ -48,15 +48,21 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
             //System.out.println(kTagLayout);
             //System.out.println(AprilTagFields.kDefaultField);
-            PhotonPipelineResult result = frontCamera.getLatestResult();
+            try{
+ PhotonPipelineResult result = frontCamera.getLatestResult();
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
             if (visionEst.isEmpty()) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
+            }
+           
 
                 //System.out.println(visionEst.get().estimatedPose);
                 
             
+        }
+        catch (Exception E){
+            System.out.print("none");
         }
     }
 
@@ -71,7 +77,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (visionEst != null){
             return visionEst.get().estimatedPose.toPose2d();
         }
-        return null;
+        return new Pose2d();
 
     }
 
