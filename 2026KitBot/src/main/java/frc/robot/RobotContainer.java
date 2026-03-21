@@ -16,11 +16,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.DRIVER_CONTROLLER_PORT;
 import static frc.robot.Constants.OperatorConstants.OPERATOR_CONTROLLER_PORT;
 import frc.robot.commands.Auto1;
-import frc.robot.commands.Auto2;
+import frc.robot.commands.Auto3;
 import frc.robot.commands.AutoAlign;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
+import frc.robot.commands.ExampleAuto2;
+import frc.robot.commands.ExampleAuto3;
+
 import frc.robot.commands.Intake;
 import frc.robot.commands.Jiggle;
 import frc.robot.commands.Launch;
@@ -70,6 +73,11 @@ public class RobotContainer {
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
+    autoChooser.addOption("Back", new ExampleAuto(driveSubsystem, fuelSubsystem));
+    autoChooser.addOption("Front", new ExampleAuto2(driveSubsystem, fuelSubsystem));
+    autoChooser.addOption("Standstill", new ExampleAuto3(driveSubsystem, fuelSubsystem));
+    autoChooser.addOption("Depot? ", new Auto3(driveSubsystem, fuelSubsystem, 2));
+    SmartDashboard.putData("Auto Choices", autoChooser);
   }
 
   /**
@@ -85,7 +93,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    operatorController.rightTrigger().whileTrue(new AutoAlign(visionSubsystem, driveSubsystem));
+    operatorController.leftTrigger().whileTrue(new AutoAlign(visionSubsystem, driveSubsystem));
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new NoFeederYesIntake(fuelSubsystem));
     // While the right bumper on the operator controller is held, spin up for 1
@@ -96,8 +104,9 @@ public class RobotContainer {
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
     driverController.x().whileTrue(new Jiggle(driveSubsystem));
     operatorController.y().whileTrue(new Intake(fuelSubsystem));
-    driverController.rightTrigger().toggleOnTrue(new InstantCommand((driveSubsystem.speedMultiplier) -> (driveSubsystem.speedMultiplier == 2) ? driveSubsystem.speedMultiplier = 1 : driveSubsystem.speedMultiplier = 2));
-
+driverController.rightTrigger().toggleOnTrue(new InstantCommand(() ->
+    driveSubsystem.speedMultiplier = (driveSubsystem.speedMultiplier == 2) ? 1 : 3
+));
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
@@ -119,8 +128,10 @@ public class RobotContainer {
 
    
     Pose2d currPose = visionSubsystem.getAutoPose();
-    if (currPose.equals(new Pose2d())){
-        return autoChooser.getSelected();
+
+            return autoChooser.getSelected();
+
+    /*if (currPose.equals(new Pose2d())){
     }
     double currX = currPose.getX();
     double currY = currPose.getY();
@@ -132,6 +143,7 @@ public class RobotContainer {
       OutpostX = 15.780766;
       OutpostY = 7.40965675;
       if (robotHeading < 0) {
+        robotHeading = (180 + robotHeading);
         robotHeading = (180 + robotHeading);
       } else {
         robotHeading = -1*(180 - robotHeading);
@@ -153,7 +165,7 @@ public class RobotContainer {
 
     double angle1 = -1 * depotTheta - robotHeading;
     double angle2 = depotTheta;
-
+KLLMMMMMMMMMMMMMMMTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTYY7
     double angle3 = outpostTheta - robotHeading;
     double angle4 = 180 - outpostTheta;
 
@@ -161,6 +173,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Angle1", angle1);
     SmartDashboard.putNumber("Angle2", angle2);
     SmartDashboard.putNumber("Distance", depotDistance);
+    driveSubsystem.getGyro().reset();
 
 
     Command outpostCommand = new Auto2(driveSubsystem, fuelSubsystem, angle3, angle4, outpostDistance, 2);
@@ -174,6 +187,10 @@ public class RobotContainer {
     
     //return autoChooser.getSelected();
     return depotCommand;
+*/
+  }
 
+  public Command getFirstAuto(){
+    return new ExampleAuto(driveSubsystem, fuelSubsystem);
   }
 }
