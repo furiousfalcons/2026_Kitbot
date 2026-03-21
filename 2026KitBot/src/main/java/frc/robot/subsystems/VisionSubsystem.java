@@ -32,16 +32,17 @@ public class VisionSubsystem extends SubsystemBase {
 
     PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera
                                                                                    // used in the pipeline
-    // PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
+    PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
 
-    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));   // Set position of camera relative to robot, meters and radians
+    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(-0.318, -0.14, 0.356), new Rotation3d(0,-14, 180));   // Set position of camera relative to robot, meters and radians
 
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
 
     // PhotonCamera camera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME);
-    PhotonPipelineResult result = frontCamera.getLatestResult();
+    PhotonPipelineResult result = backCamera.getLatestResult();
+    PhotonPipelineResult resultFront = frontCamera.getLatestResult();
     Optional<EstimatedRobotPose> visionEst;
 
     @Override
@@ -49,7 +50,9 @@ public class VisionSubsystem extends SubsystemBase {
         // System.out.println(kTagLayout);
         // System.out.println(AprilTagFields.kDefaultField);
         try {
-            PhotonPipelineResult result = frontCamera.getLatestResult();
+            PhotonPipelineResult result = backCamera.getLatestResult();
+             resultFront = backCamera.getLatestResult();
+
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
 
             if (visionEst.isEmpty() || true) {
@@ -84,8 +87,9 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public double getAngleToAlign(){
-        if (result.hasTargets()){
-            return result.getBestTarget().getYaw();
+
+        if (resultFront.hasTargets()){
+            return resultFront.getBestTarget().getYaw();
         }
         else return 0;
     }
