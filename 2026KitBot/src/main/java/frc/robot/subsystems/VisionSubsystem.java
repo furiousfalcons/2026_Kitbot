@@ -1,98 +1,75 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-import frc.robot.Constants.VisionConstants;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Pose2d;
-
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 
 public class VisionSubsystem extends SubsystemBase {
+//     int t = 0;
+//     PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera
+//                                                                                    // used in the pipeline
+//     PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
 
-    PhotonCamera frontCamera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME); // Declare the name of the camera
-                                                                                   // used in the pipeline
-    PhotonCamera backCamera = new PhotonCamera(VisionConstants.USB_CAMERA2_NAME);
+//     public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(-0.318, -0.14, 0.356), new Rotation3d(0,-14, 180));   // Set position of camera relative to robot, meters and radians
 
-    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(-0.318, -0.14, 0.356), new Rotation3d(0,-14, 180));   // Set position of camera relative to robot, meters and radians
+//     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-    public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+//     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
 
-    PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
+//     PhotonPipelineResult resultBack = backCamera.getLatestResult();
+//     PhotonPipelineResult resultFront = frontCamera.getLatestResult();
+//     Optional<EstimatedRobotPose> visionEst;
 
-    // PhotonCamera camera = new PhotonCamera(VisionConstants.USB_CAMERA1_NAME);
-    PhotonPipelineResult result = backCamera.getLatestResult();
-    PhotonPipelineResult resultFront = frontCamera.getLatestResult();
-    Optional<EstimatedRobotPose> visionEst;
+//     @Override
+//     public void periodic() {
+//         // System.out.println(kTagLayout);
+//         // System.out.println(AprilTagFields.kDefaultField);
+//         try {
+//             t += 1;
+//             PhotonPipelineResult resultFront = frontCamera.getLatestResult();
+//             resultBack = backCamera.getLatestResult();
+//              SmartDashboard.putNumber("chimpazini bananini got u", resultFront.getTimestampSeconds());
+//              SmartDashboard.putNumber("time: ", t);
+//             visionEst = photonEstimator.estimateCoprocMultiTagPose(resultBack);
 
-    @Override
-    public void periodic() {
-        // System.out.println(kTagLayout);
-        // System.out.println(AprilTagFields.kDefaultField);
-        try {
-            PhotonPipelineResult result = backCamera.getLatestResult();
-             resultFront = backCamera.getLatestResult();
+//             if (visionEst.isEmpty() || true) {
+//                 visionEst = photonEstimator.estimateLowestAmbiguityPose(resultBack);
 
-            visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
+//                 // System.out.println(visionEst.get().estimatedPose);
 
-            if (visionEst.isEmpty() || true) {
-                visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
+//             }
 
-                // System.out.println(visionEst.get().estimatedPose);
+//         }
 
-            }
+//         catch (Exception E) {
+//             System.out.println("no apriltags");
+//         }
+//     }
 
-        }
+//     /*
+//      * public Pair<Pose3d, Double> getVisionMeasurement(){
+//      * 
+//      * Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose,
+//      * visionEst.get().timestampSeconds);
+//      * return result;
+//      * }
+//      */
 
-        catch (Exception E) {
-            System.out.println("no apriltags");
-        }
-    }
+//     public Pose2d getAutoPose(){
+//         if (visionEst.isEmpty()){
+//             return new Pose2d();
 
-    /*
-     * public Pair<Pose3d, Double> getVisionMeasurement(){
-     * 
-     * Pair<Pose3d, Double> result = new Pair(visionEst.get().estimatedPose,
-     * visionEst.get().timestampSeconds);
-     * return result;
-     * }
-     */
+//         }
+//         return visionEst.get().estimatedPose.toPose2d();
 
-    public Pose2d getAutoPose(){
-        if (visionEst.isEmpty()){
-            return new Pose2d();
-        }
-        return visionEst.get().estimatedPose.toPose2d();
+//     }
 
-    }
+//     public double getAngleToAlign(){
 
-    public double getAngleToAlign(){
-
-        if (resultFront.hasTargets()){
-            return resultFront.getBestTarget().getYaw();
-        }
-        else return 0;
-    }
+//         if (resultFront.hasTargets()){
+//             return resultFront.getBestTarget().getYaw();
+//         }
+//         else return 0;
+//     }
 
 
     

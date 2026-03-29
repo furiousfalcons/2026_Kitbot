@@ -54,6 +54,10 @@ public class CANFuelSubsystem extends SubsystemBase {
     intakeLauncherRoller.setVoltage(voltage);
   }
 
+  public double get_voltage(){
+    return intakeLauncherRoller.getOutputCurrent();
+  }
+
   // A method to set the voltage of the intake roller
   public void setFeederRoller(double voltage) {
     feederRoller.setVoltage(voltage);

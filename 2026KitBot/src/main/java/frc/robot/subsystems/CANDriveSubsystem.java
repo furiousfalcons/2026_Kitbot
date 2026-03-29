@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.ADIS16448_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -73,7 +74,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
 
   public CANDriveSubsystem() {
-    speedMultiplier = 1;
+    speedMultiplier = 2.5;
     // create brushed motors for drive
     leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushed);
     leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushed);
@@ -184,6 +185,9 @@ public class CANDriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+        SmartDashboard.putNumber("speed",  speedMultiplier);
+
     m_pose = m_odometry.update(new Rotation2d(m_gyro.getAngle()),
       Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
       Units.inchesToMeters(m_rightEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION));

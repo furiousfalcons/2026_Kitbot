@@ -5,8 +5,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,25 +13,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.DRIVER_CONTROLLER_PORT;
 import static frc.robot.Constants.OperatorConstants.OPERATOR_CONTROLLER_PORT;
-import frc.robot.commands.Auto1;
 import frc.robot.commands.Auto3;
-import frc.robot.commands.AutoAlign;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
 import frc.robot.commands.ExampleAuto2;
 import frc.robot.commands.ExampleAuto3;
-
-import frc.robot.commands.Intake;
 import frc.robot.commands.Jiggle;
 import frc.robot.commands.Launch;
 import frc.robot.commands.NoFeederYesIntake;
-import frc.robot.commands.SlowIntake;
-import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -76,7 +67,7 @@ public class RobotContainer {
     autoChooser.addOption("Back", new ExampleAuto(driveSubsystem, fuelSubsystem));
     autoChooser.addOption("Front", new ExampleAuto2(driveSubsystem, fuelSubsystem));
     autoChooser.addOption("Standstill", new ExampleAuto3(driveSubsystem, fuelSubsystem));
-    autoChooser.addOption("Depot? ", new Auto3(driveSubsystem, fuelSubsystem, 2));
+    autoChooser.addOption("Depot? ", new Auto3(driveSubsystem, fuelSubsystem, 1));
     SmartDashboard.putData("Auto Choices", autoChooser);
   }
 
@@ -93,7 +84,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    operatorController.leftTrigger().whileTrue(new AutoAlign(visionSubsystem, driveSubsystem));
+    //operatorController.leftTrigger().whileTrue(new AutoAlign(visionSubsystem, driveSubsystem));
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new NoFeederYesIntake(fuelSubsystem));
     // While the right bumper on the operator controller is held, spin up for 1
@@ -103,10 +94,22 @@ public class RobotContainer {
     // the intake
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
     driverController.x().whileTrue(new Jiggle(driveSubsystem));
-    operatorController.y().whileTrue(new Intake(fuelSubsystem));
+    //operatorController.y().whileTrue(new Intake(fuelSubsystem));
+
 driverController.rightTrigger().toggleOnTrue(new InstantCommand(() ->
-    driveSubsystem.speedMultiplier = (driveSubsystem.speedMultiplier == 2) ? 1 : 3
+    driveSubsystem.speedMultiplier = (driveSubsystem.speedMultiplier == 4.5) ? 2.5 : 4.5
+
 ));
+
+driverController.leftTrigger().whileTrue(new InstantCommand(() ->
+    driveSubsystem.speedMultiplier = 8
+));
+driverController.leftTrigger().toggleOnFalse(new InstantCommand(() ->
+    driveSubsystem.speedMultiplier = 2.5
+));
+
+
+
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
@@ -127,7 +130,7 @@ driverController.rightTrigger().toggleOnTrue(new InstantCommand(() ->
     // An example command will be run in autonomous
 
    
-    Pose2d currPose = visionSubsystem.getAutoPose();
+    //Pose2d currPose = visionSubsystem.getAutoPose();
 
             return autoChooser.getSelected();
 
@@ -190,7 +193,5 @@ KLLMMMMMMMMMMMMMMMTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 */
   }
 
-  public Command getFirstAuto(){
-    return new ExampleAuto(driveSubsystem, fuelSubsystem);
-  }
+  
 }
