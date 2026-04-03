@@ -21,6 +21,9 @@ import frc.robot.commands.ExampleAuto2;
 import frc.robot.commands.ExampleAuto3;
 import frc.robot.commands.Jiggle;
 import frc.robot.commands.Launch;
+import frc.robot.commands.Intake;
+
+import frc.robot.commands.LaunchFast;
 import frc.robot.commands.NoFeederYesIntake;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
@@ -90,11 +93,12 @@ public class RobotContainer {
     // While the right bumper on the operator controller is held, spin up for 1
     // second, then launch fuel. When the button is released, stop.
     operatorController.rightBumper().whileTrue(new Launch(fuelSubsystem));
+    operatorController.rightTrigger().whileTrue(new LaunchFast(fuelSubsystem));
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
     driverController.x().whileTrue(new Jiggle(driveSubsystem));
-    //operatorController.y().whileTrue(new Intake(fuelSubsystem));
+    operatorController.leftTrigger().whileTrue(new Intake(fuelSubsystem));
 
 driverController.rightTrigger().toggleOnTrue(new InstantCommand(() ->
     driveSubsystem.speedMultiplier = (driveSubsystem.speedMultiplier == 4.5) ? 2.5 : 4.5

@@ -72,5 +72,8 @@ public class CANFuelSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Feeder", feederRoller.getOutputCurrent());
+    SmartDashboard.putNumber("Intake", intakeLauncherRoller.getOutputCurrent());
+
   }
 }

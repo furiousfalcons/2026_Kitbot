@@ -187,6 +187,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   public void periodic() {
 
         SmartDashboard.putNumber("speed",  speedMultiplier);
+        SmartDashboard.putNumber("Left", leftFollower.getOutputCurrent());
 
     m_pose = m_odometry.update(new Rotation2d(m_gyro.getAngle()),
       Units.inchesToMeters(m_leftEncoder.getPosition()*Math.PI*WHEEL_DIAMETER/GEAR_REDUCTION), 
