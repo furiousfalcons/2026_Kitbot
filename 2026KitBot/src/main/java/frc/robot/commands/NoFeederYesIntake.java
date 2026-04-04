@@ -23,7 +23,7 @@ public class NoFeederYesIntake extends Command {
   @Override
   public void initialize() {
    fuelSubsystem
-        .setIntakeLauncherRoller(6.5);
+        .setIntakeLauncherRoller(6.7);
     fuelSubsystem.setFeederRoller(0);
   }
 

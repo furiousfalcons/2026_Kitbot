@@ -23,9 +23,10 @@ public class ExampleAuto extends SequentialCommandGroup {
     //new AutoDrive(driveSubsystem,0.5,  0.0).withTimeout(.25),
     // Spin up the launcher for 1 second and then launchballs for 9 seconds, for a
     // total of 10 seconds
-     new DriveDistance(driveSubsystem, false, 2). withTimeout(0.305/2)
-     ,new Launch (ballSubsystem).withTimeout(2)
+     new DriveDistance(driveSubsystem, false, 3.76). withTimeout(0.30)
+     //,new Launch (ballSubsystem).withTimeout(2)
     ,new LaunchAndJiggle(driveSubsystem, ballSubsystem).withTimeout(14)
     );
   }
 }
+  

@@ -1,8 +1,7 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.CANDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CANDriveSubsystem;
 
 
 public class DriveDistance extends Command{
@@ -33,7 +32,7 @@ public class DriveDistance extends Command{
   // controllable.
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(speed, 0);
+    driveSubsystem.driveArcade(speed/3.76, 0);
     }
 
 
